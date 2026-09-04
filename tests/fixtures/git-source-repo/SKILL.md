@@ -1,0 +1,3 @@
+# Git Fixture
+
+No execution.
