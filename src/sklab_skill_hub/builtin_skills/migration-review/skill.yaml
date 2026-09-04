@@ -1,0 +1,33 @@
+schema_version: 1
+id: migration-review
+name: Migration Review
+version: 1.0.0
+description: Review a data migration for safety and rollback.
+type: checklist
+category: backend
+tags:
+  - backend
+  - migration
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - migration
+outputs:
+  - verdict
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

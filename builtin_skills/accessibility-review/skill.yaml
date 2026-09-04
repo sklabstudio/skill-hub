@@ -1,0 +1,33 @@
+schema_version: 1
+id: accessibility-review
+name: Accessibility Review
+version: 1.0.0
+description: WCAG-oriented accessibility checklist for UI changes.
+type: checklist
+category: frontend
+tags:
+  - frontend
+  - a11y
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - ui-diff
+outputs:
+  - checklist
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sklab-skill-hub"
+version = "0.1.0"
+description = "Discover, validate, install, manage, and safely route reusable skills across the SKLab AI engineering workstation."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "SKLab Studio" }]
+keywords = ["skills", "agents", "registry", "security", "sklab"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development",
+]
+dependencies = [
+  "typer>=0.9.0",
+  "rich>=13.0.0",
+  "pydantic>=2.0.0",
+  "pyyaml>=6.0.0",
+  "packaging>=24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.4.0",
+  "mypy>=1.10.0",
+  "build>=1.0.0",
+]
+
+[project.scripts]
+sklab-skills = "sklab_skill_hub.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/sklabstudio/skill-hub"
+Repository = "https://github.com/sklabstudio/skill-hub"
+Issues = "https://github.com/sklabstudio/skill-hub/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sklab_skill_hub = ["py.typed", "builtin_skills/*/skill.yaml", "builtin_skills/*/SKILL.md"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = ["tests/fixtures/git-source-repo/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "B008", "B904", "UP042", "UP045", "S101", "C901", "PLR0912", "PLR0915"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501", "B011", "B008", "B904", "S101", "ARG", "DTZ", "PLW", "S603", "S607"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,33 @@
+schema_version: 1
+id: database-review
+name: Database Review
+version: 1.0.0
+description: Review schema, migration and query safety.
+type: checklist
+category: backend
+tags:
+  - backend
+  - db
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - schema
+outputs:
+  - review
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

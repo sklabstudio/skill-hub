@@ -1,0 +1,38 @@
+schema_version: 1
+id: feature-build
+name: Feature Build
+version: 1.0.0
+description: Implement a scoped feature with tests and docs, minimal diff.
+type: workflow
+category: coding
+tags:
+  - coding
+  - feature
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+    - capability: shell
+permissions:
+  filesystem:
+    read: true
+    write: true
+  shell: true
+  git:
+    read: true
+    write: false
+inputs:
+  - spec
+outputs:
+  - feature
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: [git]

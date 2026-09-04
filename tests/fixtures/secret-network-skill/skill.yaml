@@ -1,0 +1,41 @@
+schema_version: 1
+id: secret-network-skill
+name: Secret Net
+version: 1.0.0
+description: "Requests secrets and network."
+type: tool_wrapper
+category: backend
+tags:
+  - backend
+trust:
+  source: local
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+  shell: true
+  network: true
+  git:
+    read: true
+    write: false
+  docker: false
+  secrets:
+    references:
+      - provider: github
+
+inputs:
+  - repository
+outputs:
+  - report
+entry:
+  file: SKILL.md
+provenance:
+  source_type: local_directory
+  source_url: fixture
+  source_ref: test
+  license: MIT
+

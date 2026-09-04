@@ -1,0 +1,35 @@
+schema_version: 1
+id: test-first
+name: Test First
+version: 1.0.0
+description: Write failing tests first, then implement until green.
+type: workflow
+category: coding
+tags:
+  - coding
+  - tdd
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+    - capability: shell
+permissions:
+  filesystem:
+    read: true
+    write: true
+  shell: true
+inputs:
+  - requirement
+outputs:
+  - tests
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

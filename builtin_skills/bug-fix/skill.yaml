@@ -1,0 +1,38 @@
+schema_version: 1
+id: bug-fix
+name: Bug Fix
+version: 1.0.0
+description: Reproduce a reported bug, apply a minimal fix, and add regression coverage.
+type: workflow
+category: coding
+tags:
+  - coding
+  - bug
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+    - capability: shell
+permissions:
+  filesystem:
+    read: true
+    write: true
+  shell: true
+  git:
+    read: true
+    write: false
+inputs:
+  - report
+outputs:
+  - fix
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: [git]

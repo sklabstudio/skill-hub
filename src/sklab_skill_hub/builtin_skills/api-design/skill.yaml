@@ -1,0 +1,33 @@
+schema_version: 1
+id: api-design
+name: API Design
+version: 1.0.0
+description: Design a consistent versioned API with error and pagination rules.
+type: workflow
+category: backend
+tags:
+  - backend
+  - api
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - spec
+outputs:
+  - api-design
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

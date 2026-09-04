@@ -1,0 +1,35 @@
+schema_version: 1
+id: test-generator
+name: Test Generator
+version: 1.0.0
+description: Generate focused unit and integration tests for uncovered behavior.
+type: workflow
+category: coding
+tags:
+  - coding
+  - tests
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+    - capability: shell
+permissions:
+  filesystem:
+    read: true
+    write: true
+  shell: true
+inputs:
+  - module
+outputs:
+  - tests
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

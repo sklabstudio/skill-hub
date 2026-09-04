@@ -1,0 +1,33 @@
+schema_version: 1
+id: version-bump-review
+name: Version Bump Review
+version: 1.0.0
+description: Review a version bump for semver correctness.
+type: checklist
+category: git
+tags:
+  - git
+  - semver
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - diff
+outputs:
+  - verdict
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

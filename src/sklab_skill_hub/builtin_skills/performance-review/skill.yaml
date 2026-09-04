@@ -1,0 +1,33 @@
+schema_version: 1
+id: performance-review
+name: Performance Review
+version: 1.0.0
+description: Checklist for hotspot, complexity and regression review.
+type: checklist
+category: coding
+tags:
+  - coding
+  - perf
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - diff
+outputs:
+  - checklist
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

@@ -1,0 +1,33 @@
+schema_version: 1
+id: repo-understand
+name: Repository Understand
+version: 1.0.0
+description: Survey repository layout, entry points, dependencies and tests before changing code.
+type: workflow
+category: coding
+tags:
+  - coding
+  - repo
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - repository
+outputs:
+  - map
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: [git]

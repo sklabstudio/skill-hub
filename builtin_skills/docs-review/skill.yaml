@@ -1,0 +1,33 @@
+schema_version: 1
+id: docs-review
+name: Docs Review
+version: 1.0.0
+description: Review documentation accuracy and examples.
+type: checklist
+category: research
+tags:
+  - research
+  - docs
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - docs
+outputs:
+  - review
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

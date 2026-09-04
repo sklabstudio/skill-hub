@@ -1,0 +1,33 @@
+schema_version: 1
+id: github-actions-review
+name: GitHub Actions Review
+version: 1.0.0
+description: Review a workflow for triggers, pins and secret handling.
+type: checklist
+category: devops
+tags:
+  - devops
+  - gha
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - workflow
+outputs:
+  - review
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

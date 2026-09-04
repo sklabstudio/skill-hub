@@ -1,0 +1,39 @@
+schema_version: 1
+id: unknown-license
+name: Unknown License
+version: 1.0.0
+description: "No license metadata."
+type: prompt
+category: research
+tags:
+  - research
+trust:
+  source: local
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+  shell: false
+  network: false
+  git:
+    read: true
+    write: false
+  docker: false
+  secrets: false
+
+inputs:
+  - repository
+outputs:
+  - report
+entry:
+  file: SKILL.md
+provenance:
+  source_type: local_directory
+  source_url: fixture
+  source_ref: test
+  license: LICENSE_UNKNOWN
+

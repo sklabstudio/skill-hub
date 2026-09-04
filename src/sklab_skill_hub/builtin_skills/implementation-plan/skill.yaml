@@ -1,0 +1,33 @@
+schema_version: 1
+id: implementation-plan
+name: Implementation Plan
+version: 1.0.0
+description: Produce a staged implementation plan with verification.
+type: template
+category: research
+tags:
+  - research
+  - plan
+trust:
+  source: builtin
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+inputs:
+  - task
+outputs:
+  - plan
+entry:
+  file: SKILL.md
+provenance:
+  source_type: builtin
+  source_url: builtin://sklab-studio/skill-hub
+  source_ref: v0.1.0
+  license: MIT
+requires:
+  tools: []

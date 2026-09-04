@@ -1,0 +1,22 @@
+schema_version: 1
+
+registry:
+  data_dir: ~/.sklab/skills
+
+auto_install:
+  mode: safe
+  allow_trust:
+    - BUILTIN
+    - VERIFIED
+  max_risk: low
+  permanent_enable: false
+  task_scoped_enable: true
+
+sources:
+  builtin: true
+  coding_lab: true
+  local: []
+
+security:
+  block_secret_network_combo: true
+  quarantine_executable_community: true

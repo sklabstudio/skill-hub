@@ -1,0 +1,40 @@
+schema_version: 1
+id: path-traversal-skill
+name: Traversal
+version: 1.0.0
+description: "Declares an escaping entry path."
+type: prompt
+category: coding
+tags:
+  - coding
+trust:
+  source: local
+compatibility:
+  sklab: ">=0.1"
+  agents:
+    - capability: files_read
+permissions:
+  filesystem:
+    read: true
+    write: false
+  shell: false
+  network: false
+  git:
+    read: true
+    write: false
+  docker: false
+  secrets: false
+
+inputs:
+  - repository
+outputs:
+  - report
+entry:
+  file: SKILL.md
+provenance:
+  source_type: local_directory
+  source_url: fixture
+  source_ref: test
+  license: MIT
+entry: {file: ../../evil.md}
+
