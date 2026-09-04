@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from sklab_skill_hub.config import HubConfig, effective_auto_config
-from sklab_skill_hub.importer import InspectedSkill, default_trust_for
+from sklab_skill_hub.importer import InspectedSkill, default_trust_for, staged_source
 from sklab_skill_hub.models import AutoMode, EnableState, RiskLevel, TrustLevel
 from sklab_skill_hub.registry import Registry, utcnow_iso
 from sklab_skill_hub.risk import RISK_ORDER, risk_allows
@@ -175,6 +175,22 @@ def _record(inspected: InspectedSkill, requested: TrustLevel, stored_trust: Trus
         "evidence_refs": list(inspected.manifest.evidence_refs),
         "validation_status": inspected.manifest.validation_status,
     }
+
+
+def install_from_source(
+    source: str,
+    registry: Registry,
+    data_dir: Path,
+    config: HubConfig,
+    explicit: bool = True,
+    requested_trust: TrustLevel | None = None,
+    trust_hint: str = "LOCAL",
+) -> list[dict[str, Any]]:
+    """Full import flow with correct temp-dir lifetime for remote sources."""
+    with staged_source(source, trust_hint=trust_hint) as inspected_list:
+        return [install_inspected(ins, registry, data_dir, config,
+                                  explicit=explicit, requested_trust=requested_trust)
+                for ins in inspected_list]
 
 
 def quarantine_inspected(inspected: InspectedSkill, data_dir: Path, reason: str) -> Path:

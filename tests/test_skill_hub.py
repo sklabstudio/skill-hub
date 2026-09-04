@@ -161,6 +161,11 @@ def test_git_source_import_and_pinning(data_dir: Path, registry: Registry, confi
     sha = out2[0].provenance.get("source_ref", "")
     assert len(sha) >= 7, f"expected pinned sha, got {sha!r}"
     assert out2[0].verdict.value == "VALID"
+    # Full managed flow installs from the clone (temp lifetime handled).
+    results = installer_mod.install_from_source(url, registry, data_dir, config, explicit=True)
+    assert results[0]["installed"] is True
+    rec = registry.get("git-fixture-skill")
+    assert rec is not None and len(str(rec.get("source_ref", ""))) >= 7
 
 
 def test_import_non_execution(data_dir: Path, registry: Registry, config: HubConfig):
@@ -168,10 +173,12 @@ def test_import_non_execution(data_dir: Path, registry: Registry, config: HubCon
     for name in ("PWNED", "PWNED2", "PWNED3", "PWNED4"):
         assert not (repo / name).exists(), f"hook executed in source?! {name}"
     url = repo.as_uri()
-    inspected = inspect_source(url)[0]
-    res = installer_mod.install_inspected(inspected, registry, data_dir, config, explicit=True)
-    assert res["installed"] is True
-    dest = data_dir / "installed" / inspected.skill_id / inspected.version
+    results = installer_mod.install_from_source(url, registry, data_dir, config, explicit=True)
+    assert results and results[0]["installed"] is True
+    rec = registry.get(results[0]["skill_id"])
+    assert rec is not None
+    dest = data_dir / "installed" / rec["skill_id"] / rec["version"]
+    assert dest.is_dir()
     for name in ("PWNED", "PWNED2", "PWNED3", "PWNED4"):
         assert not (dest / name).exists()
         assert not (Path.cwd() / name).exists()

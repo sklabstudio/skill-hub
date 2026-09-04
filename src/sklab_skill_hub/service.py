@@ -99,10 +99,7 @@ def install_skill(data_dir: Path, config: HubConfig, source: str, explicit: bool
 
     paths = ensure_layout(data_dir)
     reg = Registry(data_dir)
-    results = []
-    for inspected in inspect_source(source):
-        results.append(_installer.install_inspected(inspected, reg, paths["root"], config, explicit=explicit))
-    return results
+    return _installer.install_from_source(source, reg, paths["root"], config, explicit=explicit)
 
 
 def enable_skill_api(data_dir: Path, skill_id: str, task_scoped: bool = False, force: bool = False) -> dict[str, Any]:
@@ -121,18 +118,12 @@ def update_skill_api(data_dir: Path, config: HubConfig, skill_id: str, source: s
     rec = reg.get(skill_id)
     if rec is None:
         raise KeyError(f"unknown skill: {skill_id}")
-    inspected_list = inspect_source(source)
-    target = None
-    for ins in inspected_list:
-        if ins.skill_id == skill_id:
-            target = ins
-            break
-    if target is None:
-        target = inspected_list[0]
-    plan = _installer.plan_update(rec, target)
-    if plan["status"] == "SECURITY_REVIEW_REQUIRED":
-        return {**plan, "applied": False}
-    res = _installer.install_inspected(target, reg, paths["root"], config, explicit=True)
+    with _installer.staged_source(source) as inspected_list:
+        target = next((ins for ins in inspected_list if ins.skill_id == skill_id), inspected_list[0])
+        plan = _installer.plan_update(rec, target)
+        if plan["status"] == "SECURITY_REVIEW_REQUIRED":
+            return {**plan, "applied": False}
+        res = _installer.install_inspected(target, reg, paths["root"], config, explicit=True)
     return {**plan, "applied": bool(res.get("installed")), "install": res}
 
 

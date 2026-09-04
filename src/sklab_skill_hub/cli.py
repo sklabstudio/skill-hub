@@ -16,7 +16,7 @@ from sklab_skill_hub import installer as _installer
 from sklab_skill_hub import resolver as _resolver
 from sklab_skill_hub.builtins import builtin_dir, list_builtin_ids
 from sklab_skill_hub.config import HubConfig, load_config, save_config
-from sklab_skill_hub.importer import inspect_skill_dir, inspect_source
+from sklab_skill_hub.importer import inspect_skill_dir, inspect_source, staged_source
 from sklab_skill_hub.integrations import (
     coding_lab_skills,
     compatible_agents,
@@ -287,14 +287,11 @@ def import_cmd(
     else:
         requested = None
     try:
-        inspected_list = inspect_source(source)
+        results = _installer.install_from_source(
+            source, reg, root, cfg, explicit=True, requested_trust=requested)
     except (OSError, RuntimeError, ValueError, FileNotFoundError) as exc:
         err_console.print(f"[red]import failed: {exc}[/red]")
         raise typer.Exit(1)
-    results = []
-    for inspected in inspected_list:
-        res = _installer.install_inspected(inspected, reg, root, cfg, explicit=True, requested_trust=requested)
-        results.append(res)
     if json_out:
         typer.echo(json.dumps(results, indent=2, sort_keys=True))
         return
@@ -331,13 +328,13 @@ def install_cmd(
             raise typer.Exit(1)
     try:
         hint = "BUILTIN" if _is_builtin_path(src) else "LOCAL"
-        inspected_list = inspect_source(src, trust_hint=hint)
+        with staged_source(src, trust_hint=hint) as inspected_list:
+            # Prefer matching id when a repo yields several skills.
+            target = next((i for i in inspected_list if i.skill_id == skill), inspected_list[0])
+            res = _installer.install_inspected(target, reg, root, cfg, explicit=True, requested_trust=requested)
     except (OSError, RuntimeError, ValueError, FileNotFoundError) as exc:
         err_console.print(f"[red]install failed: {exc}[/red]")
         raise typer.Exit(1)
-    # Prefer matching id when a repo yields several skills.
-    target = next((i for i in inspected_list if i.skill_id == skill), inspected_list[0])
-    res = _installer.install_inspected(target, reg, root, cfg, explicit=True, requested_trust=requested)
     if json_out:
         typer.echo(json.dumps(res, indent=2, sort_keys=True))
         return
@@ -437,19 +434,19 @@ def update_cmd(
         raise typer.Exit(1)
     src = source or rec.get("source_url") or str(builtin_dir() / skill)
     try:
-        inspected_list = inspect_source(src)
+        with staged_source(src) as inspected_list:
+            target = next((i for i in inspected_list if i.skill_id == skill), inspected_list[0])
+            plan = _installer.plan_update(rec, target)
+            if plan["status"] == "SECURITY_REVIEW_REQUIRED":
+                if json_out:
+                    typer.echo(json.dumps({**plan, "applied": False}, indent=2, sort_keys=True))
+                else:
+                    typer.echo(f"SECURITY_REVIEW_REQUIRED: {plan['reason']}")
+                raise typer.Exit(2)
+            res = _installer.install_inspected(target, reg, root, cfg, explicit=True)
     except (OSError, RuntimeError, ValueError, FileNotFoundError) as exc:
         err_console.print(f"[red]update failed: {exc}[/red]")
         raise typer.Exit(1)
-    target = next((i for i in inspected_list if i.skill_id == skill), inspected_list[0])
-    plan = _installer.plan_update(rec, target)
-    if plan["status"] == "SECURITY_REVIEW_REQUIRED":
-        if json_out:
-            typer.echo(json.dumps({**plan, "applied": False}, indent=2, sort_keys=True))
-        else:
-            typer.echo(f"SECURITY_REVIEW_REQUIRED: {plan['reason']}")
-        raise typer.Exit(2)
-    res = _installer.install_inspected(target, reg, root, cfg, explicit=True)
     payload = {**plan, "applied": bool(res.get("installed")), "install": res}
     if json_out:
         typer.echo(json.dumps(payload, indent=2, sort_keys=True))

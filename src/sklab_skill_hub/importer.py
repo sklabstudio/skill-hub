@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 import shutil
 import subprocess
 import tempfile
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -65,6 +67,13 @@ class InspectedSkill:
             "has_executable": self.has_executable,
             "provenance": self.provenance,
         }
+
+
+def github_ref(url: str) -> str | None:
+    m = GITHUB_RE.match(url.strip())
+    if m and m.group("ref"):
+        return m.group("ref")
+    return None
 
 
 def classify_source(raw: str) -> tuple[SourceType, str]:
@@ -318,6 +327,31 @@ def inspect_source(
     finally:
         if tmpdir is not None:
             shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+@contextlib.contextmanager
+def staged_source(source: str, trust_hint: str = "LOCAL") -> Iterator[list[InspectedSkill]]:
+    """Yield inspected skills keeping any clone temp dir alive for the caller.
+
+    Use this for import/install/update flows. `inspect_source` is read-only
+    and cleans up before returning, so its `skill_dir` paths must not be
+    installed from. No execution happens in either path.
+    """
+    kind, loc = classify_source(source)
+    if kind in (SourceType.GITHUB, SourceType.GIT_REPOSITORY):
+        tmpdir = Path(tempfile.mkdtemp(prefix="sklab-skills-import-"))
+        try:
+            dest = tmpdir / "repo"
+            sha, _url = clone_git(loc, dest, github_ref(source))
+            dirs = find_skill_dirs(dest)
+            if not dirs:
+                raise FileNotFoundError(f"no skill manifests found in {source}")
+            yield [inspect_skill_dir(d, source_type=kind, source_url=source,
+                                     source_ref=sha, trust_hint=trust_hint) for d in dirs]
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+    else:
+        yield inspect_source(source, trust_hint=trust_hint)
 
 
 def default_trust_for(source_type: SourceType, trust_hint: str = "") -> TrustLevel:
