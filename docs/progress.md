@@ -15,7 +15,13 @@
 - [x] Agent Adapters / Orchestrator / Coding Lab / ReproBox integration points
 - [x] CLI with --json across major commands
 - [x] Docs, fixtures, tests
-- [ ] Final gate: pytest + ruff + mypy + build + smoke
-- [ ] GitHub publish + Actions green (pending: external step)
+- [x] Final gate: pytest + ruff + mypy + build + smoke
+- [x] GitHub publish + Actions green (https://github.com/sklabstudio/skill-hub)
+
+CI note (fixed 2026-09-04): first CI run caught a real bug — remote-clone
+temp dirs were cleaned up before install, breaking git-source installs on
+Linux (masked on Windows where rmtree silently fails on locked files).
+Fixed via `staged_source` clone-lifetime context + `install_from_source`;
+all import/install/update flows use it. Regression tests added.
 
 No external AI, no paid providers, no arbitrary remote execution used.
